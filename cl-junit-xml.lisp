@@ -48,9 +48,9 @@
               (cxml:attribute "time" (format nil "~,1f"
                                              (duration testcase)))
               (alexandria:when-let ((text (error-text testcase)))
-                (cxml:with-element "error" (cxml:text text)))
+                (cxml:with-element "error" (cxml:cdata text)))
               (alexandria:when-let ((text (failure-text testcase)))
-                (cxml:with-element "failure" (cxml:text text)))))))))
+                (cxml:with-element "failure" (cxml:cdata text)))))))))
   )
 
 (defun make-junit (&key testsuites)

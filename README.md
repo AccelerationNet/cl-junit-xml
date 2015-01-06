@@ -18,11 +18,11 @@ Small library for writing [junit][]-compatible XML files.
         <testcase name="test 3" classname="class" time="5.0"/>
         <testcase name="test 2" classname="class" time="2.0">
           <error>
-            problem running the test</error>
+            <![CDATA[problem running the test]]></error>
         </testcase>
         <testcase name="test" classname="class" time="1.0">
           <failure>
-            invalid assertion</failure>
+            <![CDATA[invalid assertion]]></failure>
         </testcase>
       </testsuite>
     </testsuites>
