@@ -24,34 +24,32 @@
                    s :encoding :utf-8 :indentation (when pretty-p 2))))))
 
 (defun %write-xml (junit-xml sink)
-  (cxml:with-xml-output sink
-    (cxml:with-element "testsuites"
+  (with-xml-output sink
+    (with-element "testsuites"
       (iter
         (for id from 0)
         (for suite in (testsuites junit-xml))
-<<<<<<< HEAD
-        (cxml:with-element "testsuite"
-          (cxml:attribute "name" (name suite))
-          (cxml:attribute "package" "")
-          (cxml:attribute "timestamp" (timestamp suite))
-          (cxml:attribute "id" id)
-          (cxml:attribute "tests" (length (testcases suite)))
-          (cxml:attribute "errors" (count-if #'error-text (testcases suite)))
-          (cxml:attribute "failures" (count-if #'failure-text (testcases suite)))
-          (cxml:attribute "time" (format nil "~,1f"
+        (with-element "testsuite"
+          (attribute "name" (name suite))
+          (attribute "package" "")
+          (attribute "timestamp" (timestamp suite))
+          (attribute "id" id)
+          (attribute "tests" (length (testcases suite)))
+          (attribute "errors" (count-if #'error-text (testcases suite)))
+          (attribute "failures" (count-if #'failure-text (testcases suite)))
+          (attribute "time" (format nil "~,1f"
                                          (reduce #'+ (testcases suite)
                                                  :key #'duration)))
           (dolist (testcase (testcases suite))
-            (cxml:with-element "testcase"
-              (cxml:attribute "name" (name testcase))
-              (cxml:attribute "classname" (class-name testcase))
-              (cxml:attribute "time" (format nil "~,1f"
+            (with-element "testcase"
+              (attribute "name" (name testcase))
+              (attribute "classname" (class-name testcase))
+              (attribute "time" (format nil "~,1f"
                                              (duration testcase)))
-              (alexandria:when-let ((text (error-text testcase)))
-                (cxml:with-element "error" (cxml:cdata text)))
-              (alexandria:when-let ((text (failure-text testcase)))
-                (cxml:with-element "failure" (cxml:cdata text)))))))))
-  )
+              (when-let ((text (error-text testcase)))
+                (with-element "error" (cdata text)))
+              (when-let ((text (failure-text testcase)))
+                (with-element "failure" (cdata text))))))))))
 
 (defun make-junit (&key testsuites)
   (make-instance 'junit-xml :testsuites testsuites))
