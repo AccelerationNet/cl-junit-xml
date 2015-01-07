@@ -11,7 +11,7 @@
       (add-child suite
                  (make-testcase
                   (lisp-unit2::name (lisp-unit2:unit-test test-result))
-                  (name suite)
+                  (lisp-unit2::name results)
                   ;; get duration in partial seconds
                   (/ (- (lisp-unit2::internal-end-time test-result)
                         (lisp-unit2::internal-start-time test-result))
