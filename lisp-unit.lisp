@@ -7,10 +7,14 @@
                  (add-child
                   suite
                   (make-testcase test-name
-                                 (format nil "lisp-unit.~a"
+                                 (format nil "~a.~a"
                                          (or name
                                              (package-name
-                                              (symbol-package test-name))))
+                                              (symbol-package test-name)))
+                                         (cl-ppcre:register-groups-bind (c)
+                                             ("(?:(.*)\\.)?[^\\.]+$" (princ-to-string test-name))
+                                           (or c "root"))
+                                         )
                                  (/ (lisp-unit::run-time test-result)
                                     internal-time-units-per-second)
                                  :error (with-output-to-string (s)

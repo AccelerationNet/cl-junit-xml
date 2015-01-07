@@ -31,7 +31,7 @@
                                    ("name" "test"))))
                    xmls)))
 
-(define-test make-testsuite/with-optional-args ()
+(define-test testsuite.make-with-optional-args ()
   (let* ((junit (make-junit))
          (suite (add-child junit (make-testsuite "suite" :timestamp "now"
                                                          :package "foo")))
@@ -86,7 +86,7 @@
     (assert-true (probe-file path))
     (delete-file path)))
 
-(define-test make-testcase/ignore-empty-strings ()
+(define-test testcase.make-ignores-empty-strings ()
   (let ((tx-empty (make-testcase "test" "class" 0 :error "" :failure ""))
         (tx-nil (make-testcase "test" "class" 0 :error "" :failure ""))
         (tx (make-testcase "test" "class" 0 :error "e" :failure "f")))
