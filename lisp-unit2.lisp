@@ -13,8 +13,10 @@
                  (make-testcase
                   (lisp-unit2::name (lisp-unit2:unit-test test-result))
                   (name suite)
-                  (- (lisp-unit2::end-time test-result)
-                     (lisp-unit2::start-time test-result))
+                  ;; get duration in partial seconds
+                  (/ (- (lisp-unit2::internal-end-time test-result)
+                        (lisp-unit2::internal-start-time test-result))
+                     internal-time-units-per-second)
                   :error (when (lisp-unit2:errors test-result)
                            (summary test-result))
                   :failure (when (lisp-unit2:failed test-result)
