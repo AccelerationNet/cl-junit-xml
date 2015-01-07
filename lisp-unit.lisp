@@ -6,7 +6,11 @@
     (maphash #'(lambda (test-name test-result)
                  (add-child
                   suite
-                  (make-testcase test-name (or name (name suite))
+                  (make-testcase test-name
+                                 (format nil "lisp-unit.~a"
+                                         (or name
+                                             (package-name
+                                              (symbol-package test-name))))
                                  (/ (lisp-unit::run-time test-result)
                                     internal-time-units-per-second)
                                  :error (with-output-to-string (s)
