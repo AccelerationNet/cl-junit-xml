@@ -69,6 +69,16 @@ libraries.
 ASDF system, and adds some additional `write-xml` specializations for
 [lisp-unit2][] objects.
 
+Any dots (`.`) in test names will be read as part of the `classname`
+for junit, which affects rendering in systems like Jenkins.
+
+For example, assuming you start with `(lisp-unit2:run-tests :name :my-tests)`:
+
+* the test `frobs` will appear in junit as package `MY-TESTS`, class
+  `MY-TESTS.root`, name `frobs`
+* the test `foo.frobs` will appear in junit as package `MY-TESTS`,
+  class `MY-TESTS.FOO`, name `foo.frobs`
+
 #### writing XML directly
 
     (write-xml (lisp-unit2:run-tests :name :my-tests) T :pretty-p T)
@@ -91,6 +101,14 @@ ASDF system, and adds some additional `write-xml` specializations for
 
 Adds a `:name` keyword arg to `write-xml` that will be used as the
 default XML `classname`.
+
+Classname handling is similar to lisp-unit2. For example, assuming you
+start with `(write-xml test-results T :name :my-tests)`:
+
+* the test `frobs` will appear in junit as package `MY-TESTS`, class
+  `MY-TESTS.root`, name `frobs`
+* the test `foo.frobs` will appear in junit as package `MY-TESTS`,
+  class `MY-TESTS.FOO`, name `foo.frobs`
 
 #### writing XML via the [lisp-unit][]'s signals:
 
