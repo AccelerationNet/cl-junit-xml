@@ -5,7 +5,7 @@
 (in-package :cl-junit-xml.test)
 
 (defun run-tests (&key suites tests)
-  (let* ((*package* (find-package :cl-junit-xml.test)))
+  (let ((*package* (find-package :cl-junit-xml.test)))
     (lisp-unit2:run-tests
      :tests tests
      :tags suites
