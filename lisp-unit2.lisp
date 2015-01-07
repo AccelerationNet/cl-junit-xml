@@ -2,8 +2,7 @@
 
 (defmethod write-xml ((results lisp-unit2:test-results-db) sink &key pretty-p &allow-other-keys)
   (let* ((junit (make-junit))
-         (suite (add-child junit
-                           (make-testsuite (lisp-unit2::name results)))))
+         (suite (add-child junit (make-testsuite "lisp-unit2"))))
     (flet ((summary (test-result)
              (with-output-to-string (lisp-unit2:*test-stream*)
                (lisp-unit2:print-summary test-result))))

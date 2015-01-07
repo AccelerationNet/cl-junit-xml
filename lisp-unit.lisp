@@ -2,12 +2,11 @@
 
 (defmethod write-xml ((results lisp-unit::test-results-db) sink &key pretty-p name &allow-other-keys)
   (let* ((junit (make-junit))
-         (suite (add-child junit
-                           (make-testsuite (or name "lisp-unit results")))))
-    (maphash #'(lambda (name test-result)
+         (suite (add-child junit (make-testsuite "lisp-unit"))))
+    (maphash #'(lambda (test-name test-result)
                  (add-child
                   suite
-                  (make-testcase name (name suite)
+                  (make-testcase test-name (or name (name suite))
                                  (/ (lisp-unit::run-time test-result)
                                     internal-time-units-per-second)
                                  :error (with-output-to-string (s)
