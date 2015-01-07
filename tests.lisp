@@ -20,8 +20,7 @@
          (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
     (declare (ignore testcase))
 
-    (assert-equalp '("testsuites" nil
-                     ("testsuite" (("time" "1.0")
+    (assert-equalp '("testsuite" (("time" "1.0")
                                    ("failures" "0")
                                    ("errors" "0")
                                    ("tests" "1")
@@ -29,7 +28,7 @@
                                    ("name" "suite"))
                       ("testcase" (("time" "1.0")
                                    ("classname" "class")
-                                   ("name" "test")))))
+                                   ("name" "test"))))
                    xmls)))
 
 (define-test make-testsuite/with-optional-args ()
@@ -40,15 +39,14 @@
          (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
     (declare (ignore suite))
 
-    (assert-equalp '("testsuites" nil
-                    ("testsuite" (("time" "0.0")
+    (assert-equalp '("testsuite" (("time" "0.0")
                                   ("failures" "0")
                                   ("errors" "0")
                                   ("tests" "0")
                                   ("id" "0")
                                   ("timestamp" "now")
                                   ("package" "foo")
-                                  ("name" "suite"))))
+                                  ("name" "suite")))
                    xmls)))
 
 (define-test errors-and-failures ()
@@ -62,8 +60,7 @@
          (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
     (declare (ignore testcase testcase2))
 
-    (assert-equalp '("testsuites" nil
-                    ("testsuite" (("time" "2.0")
+    (assert-equalp '("testsuite" (("time" "2.0")
                                   ("failures" "1")
                                   ("errors" "1")
                                   ("tests" "2")
@@ -76,7 +73,7 @@
                      ("testcase" (("time" "1.0")
                                   ("classname" "class")
                                   ("name" "test"))
-                      ("failure" nil "invalid assertion"))))
+                      ("failure" nil "invalid assertion")))
                xmls)))
 
 (define-test writes-files ()
@@ -99,3 +96,26 @@
     (assert-false (cl-junit-xml::failure-text tx-empty))
     (assert-false (cl-junit-xml::failure-text tx-nil))
     (assert-equal "f" (cl-junit-xml::failure-text tx))))
+
+(define-test multiple-suites ()
+  (let* ((junit (make-junit))
+         (suite (add-child junit (make-testsuite "suite")))
+         (suite2 (add-child junit (make-testsuite "suite2")))
+         (xml (write-xml junit nil))
+         (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
+    (declare (ignore suite suite2))
+
+    (assert-equalp '("testsuites" nil
+                     ("testsuite" (("time" "0.0")
+                                   ("failures" "0")
+                                   ("errors" "0")
+                                   ("tests" "0")
+                                   ("id" "0")
+                                   ("name" "suite")))
+                     ("testsuite" (("time" "0.0")
+                                   ("failures" "0")
+                                   ("errors" "0")
+                                   ("tests" "0")
+                                   ("id" "1")
+                                   ("name" "suite2"))))
+                   xmls)))

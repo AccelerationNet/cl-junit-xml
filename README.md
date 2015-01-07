@@ -15,19 +15,18 @@ Small library for writing [junit][]-compatible XML files.
       (add-child suite (make-testcase "test 3" "class" 5.0))
       (write-xml junit T :pretty-p T))
     <?xml version="1.0" encoding="UTF-8"?>
-    <testsuites>
-      <testsuite name="suite" package="" timestamp="now" id="0" tests="3" errors="1" failures="1" time="8.0">
-        <testcase name="test 3" classname="class" time="5.0"/>
-        <testcase name="test 2" classname="class" time="2.0">
-          <error>
-            <![CDATA[problem running the test]]></error>
-        </testcase>
-        <testcase name="test" classname="class" time="1.0">
-          <failure>
-            <![CDATA[invalid assertion]]></failure>
-        </testcase>
-      </testsuite>
-    </testsuites>
+    <testsuite name="suite" timestamp="now" id="0" tests="3" errors="1" failures="1" time="8.0">
+      <testcase name="test 3" classname="class" time="5.0"/>
+      <testcase name="test 2" classname="class" time="2.0">
+        <error>
+          <![CDATA[problem running the test]]></error>
+      </testcase>
+      <testcase name="test" classname="class" time="1.0">
+        <failure>
+          <![CDATA[invalid assertion]]></failure>
+      </testcase>
+    </testsuite>
+
 
 
 ## API

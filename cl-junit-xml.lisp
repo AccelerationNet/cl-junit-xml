@@ -32,44 +32,52 @@
     (with-open-file (stream sink :direction :output :if-exists :supersede
                                  :element-type '(unsigned-byte 8))
       (%write-xml junit-xml
-                  (cxml:make-octet-stream-sink
-                   stream :encoding :utf-8 :indentation (when pretty-p 2))))
+                  :sink (cxml:make-octet-stream-sink
+                         stream :encoding :utf-8 :indentation (when pretty-p 2))))
     (truename sink))
   (:method (junit-xml (sink null) &key pretty-p &allow-other-keys)
     (with-output-to-string (s)
       (%write-xml junit-xml
+                  :sink
                   (cxml:make-character-stream-sink
                    s :encoding :utf-8 :indentation (when pretty-p 2))))))
 
-(defun %write-xml (junit-xml sink)
-  (with-xml-output sink
-    (with-element "testsuites"
-      (iter
-        (for id from 0)
-        (for suite in (testsuites junit-xml))
-        (with-element "testsuite"
-          (attribute "name" (name suite))
-          (when-let (pkg (pkg suite))
-            (attribute "package" pkg))
-          (when-let (ts (timestamp suite))
-            (attribute "timestamp" ts))
-          (attribute "id" id)
-          (attribute "tests" (length (testcases suite)))
-          (attribute "errors" (count-if #'error-text (testcases suite)))
-          (attribute "failures" (count-if #'failure-text (testcases suite)))
-          (attribute "time" (format nil "~,1f"
-                                         (reduce #'+ (testcases suite)
-                                                 :key #'duration)))
-          (dolist (testcase (testcases suite))
-            (with-element "testcase"
-              (attribute "name" (name testcase))
-              (attribute "classname" (class-name testcase))
-              (attribute "time" (format nil "~,1f"
-                                             (duration testcase)))
-              (when-let ((text (error-text testcase)))
-                (with-element "error" (cdata text)))
-              (when-let ((text (failure-text testcase)))
-                (with-element "failure" (cdata text))))))))))
+(defgeneric %write-xml (thing &key &allow-other-keys)
+  (:method ((junit-xml junit-xml) &key sink &allow-other-keys)
+    (with-xml-output sink
+      (if (alexandria:sequence-of-length-p (testsuites junit-xml) 1)
+          (%write-xml (first (testsuites junit-xml)))
+          (with-element "testsuites"
+            (iter (for id from 0)
+              (for suite in (reverse (testsuites junit-xml)))
+              (%write-xml suite :id id))))))
+
+  (:method ((suite junit-testsuite) &key (id 0) &allow-other-keys)
+    (with-element "testsuite"
+      (attribute "name" (name suite))
+      (when-let (pkg (pkg suite))
+        (attribute "package" pkg))
+      (when-let (ts (timestamp suite))
+        (attribute "timestamp" ts))
+      (attribute "id" id)
+      (attribute "tests" (length (testcases suite)))
+      (attribute "errors" (count-if #'error-text (testcases suite)))
+      (attribute "failures" (count-if #'failure-text (testcases suite)))
+      (attribute "time" (format nil "~,1f"
+                                (reduce #'+ (testcases suite)
+                                        :key #'duration)))
+      (mapcar #'%write-xml (testcases suite))))
+
+  (:method ((testcase junit-testcase) &key &allow-other-keys)
+    (with-element "testcase"
+      (attribute "name" (name testcase))
+      (attribute "classname" (class-name testcase))
+      (attribute "time" (format nil "~,1f"
+                                (duration testcase)))
+      (when-let ((text (error-text testcase)))
+        (with-element "error" (cdata text)))
+      (when-let ((text (failure-text testcase)))
+        (with-element "failure" (cdata text))))))
 
 (defun make-junit (&key testsuites)
   (make-instance 'junit-xml :testsuites testsuites))
