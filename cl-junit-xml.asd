@@ -14,6 +14,15 @@
   (let ((*package* (find-package :cl-junit-xml.test)))
     (eval (read-from-string "(run-tests)"))))
 
+(asdf:defsystem #:cl-junit-xml.lisp-unit2
+  :serial t
+  :description "cl-junit-xml extensions to work with lisp-unit2"
+  :author "Ryan Davis <ryan@acceleration.net>"
+  :license "MIT"
+  :depends-on (#:cl-junit-xml #:iterate #:alexandria #:lisp-unit2)
+  :components ((:file "lisp-unit2")))
+
+
 
 (asdf:defsystem #:cl-junit-xml.test
   :serial t
@@ -22,4 +31,3 @@
   :license "MIT"
   :depends-on (#:cl-junit-xml #:lisp-unit2)
   :components ((:file "tests")))
-

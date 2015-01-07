@@ -2,6 +2,8 @@
 
 Small library for writing [junit][]-compatible XML files.
 
+[junit]: http://www.junit.org
+
 ## Example
 
     CL-JUNIT-XML> (let* ((junit (make-junit))
@@ -57,4 +59,24 @@ writes the junit XML to the given sink. Supports sinks of:
 
 if `pretty-p` is non-nil, then the XML produced is indented.
 
-[junit]: http://www.junit.org
+## Integration with other testing libraries
+
+### [lisp-unit2][]
+
+[lisp-unit2][] support is available via the `cl-junit-xml.lisp-unit2`
+ASDF system, and adds some additional `write-xml` specializations for
+[lisp-unit2][] objects.
+
+#### writing XML directly
+
+    (write-xml (lisp-unit2:run-tests :name :my-tests) T :pretty-p T)
+
+#### writing XML via the [lisp-unit2][]'s signals:
+
+    (handler-bind
+        ((lisp-unit2:all-tests-complete
+           #'(lambda (c)
+               (write-xml c T :pretty-p T))))
+      (lisp-unit2:run-tests :name :my-tests))
+
+[lisp-unit2]: https://github.com/AccelerationNet/lisp-unit2
