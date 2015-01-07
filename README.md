@@ -90,12 +90,15 @@ ASDF system, and adds some additional `write-xml` specializations for
 ASDF system, and adds some additional `write-xml` specializations for
 [lisp-unit][] objects.
 
+Adds a `:name` keyword arg to `write-xml` that will be used as the
+default XML `classname`.
+
 #### writing XML via the [lisp-unit][]'s signals:
 
     (handler-bind
         ((lisp-unit:tests-run-complete
            #'(lambda (c)
-           (write-xml c T :pretty-p T))))
+           (write-xml c T :pretty-p T :name "my-tests"))))
       (lisp-unit:signal-results)
       (lisp-unit:run-tests))
 
