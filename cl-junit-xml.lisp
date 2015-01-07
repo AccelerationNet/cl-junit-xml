@@ -56,10 +56,14 @@
 
 (defun make-testsuite (name &key testcases timestamp)
   (make-instance 'junit-testsuite
-                 :name name :testcases testcases :timestamp timestamp))
+                 :name (princ-to-string name)
+                 :testcases testcases :timestamp timestamp))
 
 (defun make-testcase (name class-name duration &key error failure)
-  (make-instance 'junit-testcase :name name :duration duration :class-name class-name
+  (make-instance 'junit-testcase
+                 :name (princ-to-string name)
+                 :duration duration
+                 :class-name (princ-to-string class-name)
                  :error-text error :failure-text failure))
 
 (defgeneric add-child (parent child)
