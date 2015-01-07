@@ -81,7 +81,8 @@
                  :name (princ-to-string name)
                  :duration duration
                  :class-name (princ-to-string class-name)
-                 :error-text error :failure-text failure))
+                 :error-text (unless (alexandria:emptyp error) error)
+                 :failure-text (unless (alexandria:emptyp failure) failure)))
 
 (defgeneric add-child (parent child)
   (:method ((p junit-xml) (c junit-testsuite))

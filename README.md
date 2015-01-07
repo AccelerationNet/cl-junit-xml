@@ -80,3 +80,20 @@ ASDF system, and adds some additional `write-xml` specializations for
       (lisp-unit2:run-tests :name :my-tests))
 
 [lisp-unit2]: https://github.com/AccelerationNet/lisp-unit2
+
+### [lisp-unit][]
+
+[lisp-unit][] support is available via the `cl-junit-xml.lisp-unit`
+ASDF system, and adds some additional `write-xml` specializations for
+[lisp-unit][] objects.
+
+#### writing XML via the [lisp-unit][]'s signals:
+
+    (handler-bind
+        ((lisp-unit:tests-run-complete
+           #'(lambda (c)
+           (write-xml c T :pretty-p T))))
+      (lisp-unit:signal-results)
+      (lisp-unit:run-tests))
+
+[lisp-unit]: http://www.cliki.net/lisp-unit
