@@ -20,13 +20,13 @@
    (failure-text :reader failure-text :initarg :failure-text)))
 
 
-(defgeneric write-xml (junit-xml sink &key pretty-p)
+(defgeneric write-xml (junit-xml sink &key pretty-p &allow-other-keys)
   (:documentation "write the junit to the given sink (string, pathname, T, nil)")
-  (:method (junit-xml (sink string) &key pretty-p)
+  (:method (junit-xml (sink string) &key pretty-p &allow-other-keys)
     (write-xml junit-xml (pathname sink) :pretty-p pretty-p))
-  (:method (junit-xml (sink T) &key pretty-p)
+  (:method (junit-xml (sink T) &key pretty-p &allow-other-keys)
     (format T (write-xml junit-xml nil :pretty-p pretty-p)))
-  (:method (junit-xml (sink pathname) &key pretty-p)
+  (:method (junit-xml (sink pathname) &key pretty-p &allow-other-keys)
     (ensure-directories-exist sink)
     (with-open-file (stream sink :direction :output :if-exists :supersede
                                  :element-type '(unsigned-byte 8))
@@ -34,7 +34,7 @@
                   (cxml:make-octet-stream-sink
                    stream :encoding :utf-8 :indentation (when pretty-p 2))))
     (truename sink))
-  (:method (junit-xml (sink null) &key pretty-p)
+  (:method (junit-xml (sink null) &key pretty-p &allow-other-keys)
     (with-output-to-string (s)
       (%write-xml junit-xml
                   (cxml:make-character-stream-sink

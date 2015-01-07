@@ -48,7 +48,7 @@ creates a new junit testcase
 
 add cases to suites, and suites to junit. returns the child
 
-### `(write-xml junit sink &key pretty-p)`
+### `(write-xml junit sink &key pretty-p &allow-other-keys)`
 
 writes the junit XML to the given sink. Supports sinks of:
 
@@ -58,6 +58,9 @@ writes the junit XML to the given sink. Supports sinks of:
 * any pathname - writes the XML to that file, returns the pathname
 
 if `pretty-p` is non-nil, then the XML produced is indented.
+
+Other keys are allowed to support integration with other testing
+libraries.
 
 ## Integration with other testing libraries
 

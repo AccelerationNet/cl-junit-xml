@@ -1,6 +1,6 @@
 (in-package #:cl-junit-xml)
 
-(defmethod write-xml ((results lisp-unit::test-results-db) sink &key pretty-p)
+(defmethod write-xml ((results lisp-unit::test-results-db) sink &key pretty-p &allow-other-keys)
   (let* ((junit (make-junit))
          (suite (add-child junit (make-testsuite "lisp-unit results"))))
     (maphash #'(lambda (name test-result)
@@ -16,5 +16,5 @@
              (lisp-unit::database results))
     (write-xml junit sink :pretty-p pretty-p)))
 
-(defmethod write-xml ((c lisp-unit:test-run-complete) sink &key pretty-p)
+(defmethod write-xml ((c lisp-unit:test-run-complete) sink &key pretty-p &allow-other-keys)
   (write-xml (lisp-unit:results c) sink :pretty-p pretty-p))
