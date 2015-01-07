@@ -11,6 +11,7 @@
   (:method (junit-xml (sink T) &key pretty-p)
     (format T (write-xml junit-xml nil :pretty-p pretty-p)))
   (:method (junit-xml (sink pathname) &key pretty-p)
+    (ensure-directories-exist sink)
     (with-open-file (stream sink :direction :output :if-exists :supersede
                                  :element-type '(unsigned-byte 8))
       (%write-xml junit-xml
