@@ -14,7 +14,7 @@
 
 (define-test simple ()
   (let* ((junit (make-junit))
-         (suite (add-child junit (make-testsuite "suite" :timestamp "now")))
+         (suite (add-child junit (make-testsuite "suite")))
          (testcase (add-child suite (make-testcase "test" "class" 1.0)))
          (xml (write-xml junit nil))
          (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
@@ -26,17 +26,34 @@
                                    ("errors" "0")
                                    ("tests" "1")
                                    ("id" "0")
-                                   ("timestamp" "now")
-                                   ("package" "")
                                    ("name" "suite"))
                       ("testcase" (("time" "1.0")
                                    ("classname" "class")
                                    ("name" "test")))))
                    xmls)))
 
+(define-test make-testsuite/with-optional-args ()
+  (let* ((junit (make-junit))
+         (suite (add-child junit (make-testsuite "suite" :timestamp "now"
+                                                         :package "foo")))
+         (xml (write-xml junit nil))
+         (xmls (cxml:parse xml (cxml-xmls:make-xmls-builder))))
+    (declare (ignore suite))
+
+    (assert-equalp '("testsuites" nil
+                    ("testsuite" (("time" "0.0")
+                                  ("failures" "0")
+                                  ("errors" "0")
+                                  ("tests" "0")
+                                  ("id" "0")
+                                  ("timestamp" "now")
+                                  ("package" "foo")
+                                  ("name" "suite"))))
+                   xmls)))
+
 (define-test errors-and-failures ()
   (let* ((junit (make-junit))
-         (suite (add-child junit (make-testsuite "suite" :timestamp "now")))
+         (suite (add-child junit (make-testsuite "suite")))
          (testcase (add-child suite (make-testcase "test" "class" 1.0
                                                    :failure "invalid assertion")))
          (testcase2 (add-child suite (make-testcase "test2" "class" 1.0
@@ -51,8 +68,6 @@
                                   ("errors" "1")
                                   ("tests" "2")
                                   ("id" "0")
-                                  ("timestamp" "now")
-                                  ("package" "")
                                   ("name" "suite"))
                      ("testcase" (("time" "1.0")
                                   ("classname" "class")

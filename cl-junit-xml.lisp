@@ -10,6 +10,7 @@
 (defclass junit-testsuite ()
   ((testcases :accessor testcases :initarg :testcases)
    (name :reader name :initarg :name)
+   (pkg :reader pkg :initarg :package)
    (timestamp :reader timestamp :initarg :timestamp)))
 
 (defclass junit-testcase ()
@@ -48,8 +49,10 @@
         (for suite in (testsuites junit-xml))
         (with-element "testsuite"
           (attribute "name" (name suite))
-          (attribute "package" "")
-          (attribute "timestamp" (timestamp suite))
+          (when-let (pkg (pkg suite))
+            (attribute "package" pkg))
+          (when-let (ts (timestamp suite))
+            (attribute "timestamp" ts))
           (attribute "id" id)
           (attribute "tests" (length (testcases suite)))
           (attribute "errors" (count-if #'error-text (testcases suite)))
@@ -71,9 +74,10 @@
 (defun make-junit (&key testsuites)
   (make-instance 'junit-xml :testsuites testsuites))
 
-(defun make-testsuite (name &key testcases timestamp)
+(defun make-testsuite (name &key testcases timestamp package)
   (make-instance 'junit-testsuite
                  :name (princ-to-string name)
+                 :package (unless (alexandria:emptyp package) package)
                  :testcases testcases :timestamp timestamp))
 
 (defun make-testcase (name class-name duration &key error failure)
